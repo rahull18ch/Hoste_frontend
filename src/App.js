@@ -18,7 +18,7 @@ import AllstudentDetail from "./pages/AllstudentDetail";
 import Add_annoucement from "./components/Add_annoucement";
 import Show_Notice from "./components/Show_Notice";
 import VerifyOtp from "./pages/VerifyOtp";
-
+import ChatBot from "./components/ChatBot";
 
 
 
@@ -64,6 +64,7 @@ function App() {
           <Route path="/addannoucement" element={<Add_annoucement/>} />
           <Route path="/allnotice" element={<Show_Notice/>} />
           <Route path="/verify-otp" element={<VerifyOtp/>} />
+          <Route path="/assistant" element={<ChatBot />} />
          </Routes>
       </div>
 

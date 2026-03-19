@@ -60,6 +60,9 @@ const handleLogout = () => {
         <Link to="/" className="text-xl font-bold">
           Hostel Management
         </Link>
+        <li>
+            <Link to="/assistant">AI Assistant</Link>
+        </li>
         <div className="space-x-4">{renderLinks()}</div>
       </div>
     </nav>
