@@ -1,7 +1,7 @@
-import { Route,Router,Routes} from "react-router-dom";
+import { Route,Routes} from "react-router-dom";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Dumy from "./components/Dumy";
+
 
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -11,12 +11,12 @@ import { LoginContext } from "./contex/LoginContext";
 import { useState,useEffect } from "react";
 import StudentDashboard from "./pages/StudentDashbord";
 import AdminDashboard from "./pages/AdminDashbord";
-import Register_complain from "./components/Register_complain";
-import View_complain from "./pages/View_complain";
+import RegisterComplain from "./components/RegisterComplain";
+import ViewComplain from "./pages/ViewComplain";
 import AllComplain from "./pages/AllComplain";
 import AllstudentDetail from "./pages/AllstudentDetail";
-import Add_annoucement from "./components/Add_annoucement";
-import Show_Notice from "./components/Show_Notice";
+import AddAnnoucement from "./components/AddAnnoucement";
+import ShowNotice from "./components/ShowNotice";
 import VerifyOtp from "./pages/VerifyOtp";
 import ChatBot from "./components/ChatBot";
 
@@ -57,12 +57,12 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/student-dashboard" element={<StudentDashboard />} />
           <Route path="/admin-dashboard" element={<AdminDashboard />} />
-          <Route path="/register-complain" element={<Register_complain />} />
-          <Route path="/view-complain" element={<View_complain />} />
+          <Route path="/register-complain" element={<RegisterComplain />} />
+          <Route path="/view-complain" element={<ViewComplain />} />
           <Route path="/alldata_complain" element={<AllComplain/>} />
           <Route path="/allstudent_details" element={<AllstudentDetail/>} />
-          <Route path="/addannoucement" element={<Add_annoucement/>} />
-          <Route path="/allnotice" element={<Show_Notice/>} />
+          <Route path="/addannoucement" element={<AddAnnoucement/>} />
+          <Route path="/allnotice" element={<ShowNotice/>} />
           <Route path="/verify-otp" element={<VerifyOtp/>} />
           <Route path="/assistant" element={<ChatBot />} />
          </Routes>

@@ -1,7 +1,9 @@
-import  { useState, useContext } from "react";
+import React, { useState, useContext } from "react";
 import axios from "axios";
 import BASE_URL from '../api/config';
 import { LoginContext } from "../contex/LoginContext";
+
+// const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 const ChatBot = () => {
   const [messages, setMessages] = useState([
@@ -13,22 +15,6 @@ const ChatBot = () => {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const { token } = useContext(LoginContext) || {};
-
-  // 🔥 Format message (convert * to bullets)
-  const formatMessage = (text) => {
-    const lines = text.split("\n");
-
-    return lines.map((line, index) => {
-      if (line.trim().startsWith("*")) {
-        return (
-          <li key={index} style={{ marginLeft: "16px" }}>
-            {line.replace("*", "").trim()}
-          </li>
-        );
-      }
-      return <p key={index}>{line}</p>;
-    });
-  };
 
   const sendMessage = async () => {
     if (!input.trim() || loading) return;
@@ -42,19 +28,19 @@ const ChatBot = () => {
         `${BASE_URL}/route/chat`,
         { message: input },
         {
+          // backend route currently doesn't *require* auth,
+          // but this keeps it ready if you protect it later
           headers: token
             ? { Authorization: `Bearer ${token}` }
             : {}
         }
       );
-
       console.log("Backend response:", res.data);
 
       const botMsg = {
         from: "bot",
         text: res.data?.reply || "I’m not sure how to answer that."
       };
-
       setMessages(prev => [...prev, botMsg]);
     } catch (err) {
       console.error(err);
@@ -91,15 +77,13 @@ const ChatBot = () => {
       {/* Header */}
       <div
         style={{
-          padding: "12px",
+          padding: "10px 16px",
           borderBottom: "1px solid #eee",
           fontWeight: "bold",
-          backgroundColor: "#4CAF50",
-          color: "white",
-          textAlign: "center"
+          backgroundColor: "#f7f7f7"
         }}
       >
-        Hostel AI Assistant 🤖
+        Hostel AI Assistant
       </div>
 
       {/* Messages */}
@@ -108,7 +92,7 @@ const ChatBot = () => {
           flex: 1,
           padding: "10px",
           overflowY: "auto",
-          backgroundColor: "#f5f5f5"
+          backgroundColor: "#fafafa"
         }}
       >
         {messages.map((m, index) => (
@@ -117,31 +101,28 @@ const ChatBot = () => {
             style={{
               display: "flex",
               justifyContent: m.from === "user" ? "flex-end" : "flex-start",
-              marginBottom: "10px"
+              marginBottom: "8px"
             }}
           >
             <div
               style={{
                 maxWidth: "75%",
-                padding: "10px",
+                padding: "8px 12px",
                 borderRadius: "12px",
+                whiteSpace: "pre-wrap",
                 backgroundColor:
                   m.from === "user" ? "#DCF8C6" : "#ffffff",
                 border:
-                  m.from === "user"
-                    ? "1px solid #cde5b8"
-                    : "1px solid #ddd",
-                fontSize: "14px",
-                boxShadow: "0px 1px 3px rgba(0,0,0,0.1)"
+                  m.from === "user" ? "1px solid #cde5b8" : "1px solid #e0e0e0",
+                fontSize: "14px"
               }}
             >
-              {formatMessage(m.text)}
+              {m.text}
             </div>
           </div>
         ))}
-
         {loading && (
-          <div style={{ fontSize: "12px", color: "#666" }}>
+          <div style={{ fontSize: "12px", color: "#666", marginTop: "4px" }}>
             Thinking…
           </div>
         )}
@@ -150,7 +131,7 @@ const ChatBot = () => {
       {/* Input */}
       <div
         style={{
-          padding: "10px",
+          padding: "8px",
           borderTop: "1px solid #eee",
           display: "flex",
           gap: "8px"
@@ -158,29 +139,30 @@ const ChatBot = () => {
       >
         <input
           type="text"
-          placeholder="Ask about hostel rules, mess timings..."
+          placeholder="Ask something about hostel rules, mess timings, complaints process..."
           value={input}
           onChange={e => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
           style={{
             flex: 1,
-            padding: "10px",
+            padding: "8px",
             borderRadius: "20px",
             border: "1px solid #ccc",
-            outline: "none"
+            outline: "none",
+            fontSize: "14px"
           }}
         />
-
         <button
           onClick={sendMessage}
           disabled={loading || !input.trim()}
           style={{
-            padding: "10px 16px",
+            padding: "8px 16px",
             borderRadius: "20px",
             border: "none",
             cursor: loading ? "default" : "pointer",
             backgroundColor: loading || !input.trim() ? "#ccc" : "#4CAF50",
-            color: "#fff"
+            color: "#fff",
+            fontSize: "14px"
           }}
         >
           {loading ? "..." : "Send"}

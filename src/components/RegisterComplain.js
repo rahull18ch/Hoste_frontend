@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { toast } from 'react-toastify';
 import { useNavigate } from "react-router-dom";
 import BASE_URL from "../api/config";
 
-export default function Register_complain() {
+export default function RegisterComplain() {
   const [comments, setComments] = useState("");
   const [image, setImage] = useState(null);
   const [url, setUrl] = useState("");
@@ -21,51 +21,8 @@ export default function Register_complain() {
     }
   }, []);
 
-  useEffect(() => {
-    if (url) {
-      submitComplaint(url);
-    }
-  }, [url]);
-
-  const postComplaint = () => {
-    if (!comments || !type) {
-      notifyA("Please fill in all required fields");
-      return;
-    }
-
-    if (image) {
-      uploadToCloudinary();
-    } else {
-      // If no image, submit with default image or empty URL
-      submitComplaint("https://cdn4.iconfinder.com/data/icons/ionicons/512/icon-image-512.png");
-    }
-  };
-
-  const uploadToCloudinary = () => {
-    const data = new FormData();
-    data.append("file", image);
-    data.append("upload_preset", "insta_clone"); // 👈 Your Cloudinary upload preset
-    data.append("cloud_name", "dx0lfkfrj");       // 👈 Your Cloudinary cloud name
-
-    fetch("https://api.cloudinary.com/v1_1/dx0lfkfrj/image/upload", {
-      method: "POST",
-      body: data
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.url) {
-          setUrl(data.url);
-        } else {
-          notifyA("Image upload failed");
-        }
-      })
-      .catch((err) => {
-        console.error("Cloudinary upload error:", err);
-        notifyA("Image upload error");
-      });
-  };
-
-  const submitComplaint = (uploadedUrl) => {
+  // ✅ FIX: wrap in useCallback
+  const submitComplaint = useCallback((uploadedUrl) => {
     fetch(`${BASE_URL}/route/complain`, {
       method: "POST",
       headers: {
@@ -92,6 +49,49 @@ export default function Register_complain() {
         console.error("Complaint error:", err);
         notifyA("Something went wrong");
       });
+  }, [type, comments, regno, navigate]);
+
+  useEffect(() => {
+    if (url) {
+      submitComplaint(url);
+    }
+  }, [url, submitComplaint]); // ✅ FIX added
+
+  const postComplaint = () => {
+    if (!comments || !type) {
+      notifyA("Please fill in all required fields");
+      return;
+    }
+
+    if (image) {
+      uploadToCloudinary();
+    } else {
+      submitComplaint("https://cdn4.iconfinder.com/data/icons/ionicons/512/icon-image-512.png");
+    }
+  };
+
+  const uploadToCloudinary = () => {
+    const data = new FormData();
+    data.append("file", image);
+    data.append("upload_preset", "insta_clone");
+    data.append("cloud_name", "dx0lfkfrj");
+
+    fetch("https://api.cloudinary.com/v1_1/dx0lfkfrj/image/upload", {
+      method: "POST",
+      body: data
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.url) {
+          setUrl(data.url);
+        } else {
+          notifyA("Image upload failed");
+        }
+      })
+      .catch((err) => {
+        console.error("Cloudinary upload error:", err);
+        notifyA("Image upload error");
+      });
   };
 
   const loadfile = (event) => {
@@ -102,7 +102,6 @@ export default function Register_complain() {
 
   return (
     <div className="p-6 max-w-md mx-auto bg-white rounded-lg shadow-md">
-      {/* Back Button */}
       <div className="mb-4">
         <button
           onClick={() => navigate("/student-dashboard")}
